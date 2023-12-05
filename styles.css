@@ -1,0 +1,29 @@
+/* Add CSS styling for the grid */
+
+.subdivision-work{
+    display: grid;
+    /* grid-template-columns: 1fr 1fr; */
+    gap: 10px;
+    padding: 20px;
+    margin: auto;
+    size: 40px;
+    background-color: aqua;
+}
+#work-grid {
+    display: grid;
+    /* grid-template-columns: 1fr 1fr; */
+    gap: 10px;
+    padding: 20px;
+    margin: auto;
+    size: 40px;
+}
+
+/* Add CSS styling for the work items */
+.work-item {
+    color: black;
+    border: 1px solid #ccc;
+    padding: 30px;
+    text-align: center;
+    margin: auto;
+    background-color:cornsilk;
+}

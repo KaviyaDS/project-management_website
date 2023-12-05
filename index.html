@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <center>
+        <div id="project-title">
+            <h1 style="font-size: 40px; color:black">Project Management</h1><br><br><br><br><br>
+        </div>
+
+        <div id="subdivision-work">
+            <input type="text" id="project-name" placeholder="Enter project title" style="font-size: 30px;"><br><br><br><br>
+            <input type="text" id="subdivision-name" placeholder="Enter subdivision work" style="font-size: 25px;">
+            <select id="subdivision-status">
+                <option value="not-started">Yet to Begin</option>
+                <option value="inprogress">In Progress</option>
+                <option value="completed">Completed</option>
+            </select><br><br><br>
+            <button type="button" id="add-subdivision-work" style="font-size: 20px;">Add Subdivision Work</button>
+            <button type="button" id="generate-chart" style="font-size: 20px;">Generate Chart</button>
+        </div>
+
+        <div id="work-grid">
+            <!-- Subdivision work items will be added dynamically here -->
+        </div>
+
+        <div id="chart-container">
+            <canvas id="bar-chart"></canvas>
+        </div>
+    </center>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const projectNameInput = document.getElementById("project-name");
+            const subdivisionNameInput = document.getElementById("subdivision-name");
+            const subdivisionStatusSelect = document.getElementById("subdivision-status");
+            const addSubdivisionWorkButton = document.getElementById("add-subdivision-work");
+            const workGrid = document.getElementById("work-grid");
+            const generateChartButton = document.getElementById("generate-chart");
+            
+            const workData = {
+                labels: [],
+                inProgress: [],
+                completed: [],
+                notStarted: []
+            };
+
+            addSubdivisionWorkButton.addEventListener("click", () => {
+                const projectName = projectNameInput.value;
+                const subdivisionName = subdivisionNameInput.value;
+                const subdivisionStatus = subdivisionStatusSelect.value;
+
+                if (subdivisionName && projectName) {
+                    const workItem = document.createElement("div");
+                    workItem.classList.add("work-item");
+                    workItem.textContent = `${projectName} - ${subdivisionName} (${subdivisionStatus})`;
+                    workGrid.appendChild(workItem);
+
+                    // Update the chart data
+                    workData.labels.push(subdivisionName);
+                    if (subdivisionStatus === "inprogress") {
+                        workData.inProgress.push(1);
+                        workData.completed.push(0);
+                        workData.notStarted.push(0);
+                    } else if (subdivisionStatus === "completed") {
+                        workData.inProgress.push(0);
+                        workData.completed.push(1);
+                        workData.notStarted.push(0);
+                    } else {
+                        workData.inProgress.push(0);
+                        workData.completed.push(0);
+                        workData.notStarted.push(1);
+                    }
+
+                    // Clear the input fields
+                    subdivisionNameInput.value = '';
+                    projectNameInput.value = '';
+                }
+            });
+
+            generateChartButton.addEventListener("click", () => {
+                generateBarChart(workData);
+            });
+
+            // Function to generate a bar chart
+            function generateBarChart(data) {
+                const ctx = document.getElementById("bar-chart").getContext("2d");
+                new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: "In Progress",
+                                data: data.inProgress,
+                                backgroundColor: "rgba(54, 162, 235, 0.6)"
+                            },
+                            {
+                                label: "Completed",
+                                data: data.completed,
+                                backgroundColor: "rgba(75, 192, 192, 0.6)"
+                            },
+                            {
+                                label: "Not Started",
+                                data: data.notStarted,
+                                backgroundColor: "rgba(255, 99, 132, 0.6)"
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                beginAtZero: true
+                            },
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
